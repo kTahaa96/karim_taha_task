@@ -27,3 +27,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/orders.json
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/font/Roboto-Medium.ttf

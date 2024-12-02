@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 // import 'package:google_fonts/google_fonts.dart';
 import 'package:karim_taha_task/core/colors.dart';
 import 'package:karim_taha_task/presentation/cubit/cubit.dart';
@@ -27,9 +28,10 @@ class MyApp extends StatelessWidget {
       title: 'Orders Overview',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        brightness: Brightness.dark, // Set dark mode
+        brightness: Brightness.dark,
+        fontFamily: 'Roboto',
         primaryColor: MainColors.primary,
-        cardColor: Colors.grey[850], // Card backgrounds
+        cardColor: Colors.grey[850],
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: MainColors.primary,
@@ -42,7 +44,7 @@ class MyApp extends StatelessWidget {
               create: (context) => OrderCubit(repository)..loadOrders(),
               child: const HomeScreen(),
             ),
-        // '/graph': (context) => GraphScreen(),
+        '/graph': (context) => const GraphScreen(),
       },
     );
   }
