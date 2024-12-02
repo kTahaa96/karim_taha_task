@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:karim_taha_task/core/colors.dart';
+import 'package:karim_taha_task/core/order_data.dart';
 import 'package:karim_taha_task/presentation/cubit/cubit.dart';
 import 'package:karim_taha_task/presentation/cubit/state.dart';
-import 'package:syncfusion_flutter_charts/charts.dart'; // Syncfusion package
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -11,7 +12,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black12, // Modern dark background
+      backgroundColor: Colors.black12,
       body: BlocBuilder<OrderCubit, OrderState>(
         builder: (context, state) {
           if (state is OrderLoading) {
@@ -24,8 +25,6 @@ class HomeScreen extends StatelessWidget {
             final totalOrders = state.totalOrders;
             final total = state.total.toStringAsFixed(2);
             final returnsCount = state.returnsCount;
-
-            // Data for the Pie chart
             final nonReturnedOrders = totalOrders - returnsCount;
 
             return ListView(
@@ -39,8 +38,6 @@ class HomeScreen extends StatelessWidget {
                   total,
                 ),
                 const SizedBox(height: 24),
-
-                // Syncfusion Pie Chart for Returns vs Total Orders
                 Container(
                   height: 250,
                   child: SfCircularChart(
@@ -49,20 +46,21 @@ class HomeScreen extends StatelessWidget {
                     series: <CircularSeries>[
                       PieSeries<OrderData, String>(
                         dataSource: [
-                          OrderData('Total Orders', nonReturnedOrders.toDouble()),
+                          OrderData(
+                              'Total Orders', nonReturnedOrders.toDouble()),
                           OrderData('Returned Orders', returnsCount.toDouble()),
                         ],
                         xValueMapper: (OrderData data, _) => data.label,
                         yValueMapper: (OrderData data, _) => data.value,
                         pointColorMapper: (OrderData data, _) {
-                          // Set custom colors for each slice
                           if (data.label == 'Total Orders') {
-                            return  MainColors.primary; // Green color for Total Orders
+                            return MainColors.primary;
                           } else {
-                            return Colors.red; // Red color for Returned Orders
+                            return Colors.red;
                           }
                         },
-                        dataLabelSettings: const DataLabelSettings(isVisible: true),
+                        dataLabelSettings:
+                            const DataLabelSettings(isVisible: true),
                       ),
                     ],
                   ),
@@ -77,8 +75,6 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-
-                // Horizontal List for Top 3 Buyers
                 SizedBox(
                   height: 120,
                   child: ListView.builder(
@@ -101,7 +97,7 @@ class HomeScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  buyer.key, // Buyer name
+                                  buyer.key,
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 18,
@@ -109,7 +105,7 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  '\$${buyer.value.toStringAsFixed(2)}', // Total spent by the buyer
+                                  '\$${buyer.value.toStringAsFixed(2)}',
                                   style: const TextStyle(
                                     color: Colors.white70,
                                     fontSize: 16,
@@ -129,7 +125,7 @@ class HomeScreen extends StatelessWidget {
             return Center(child: Text(state.message));
           }
 
-          return const SizedBox.shrink(); // Default case
+          return const SizedBox.shrink();
         },
       ),
     );
@@ -186,12 +182,12 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildMetricCard(
-      String title,
-      String value,
-      Color color,
-      double top, {
-        bool? last,
-      }) {
+    String title,
+    String value,
+    Color color,
+    double top, {
+    bool? last,
+  }) {
     return Container(
       width: double.infinity,
       height: last == true ? 150 : 180,
@@ -232,11 +228,4 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class OrderData {
-  final String label;
-  final double value;
-
-  OrderData(this.label, this.value);
 }

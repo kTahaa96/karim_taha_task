@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:karim_taha_task/core/chard_data.dart';
 import 'package:karim_taha_task/domain/entities/order_entity.dart';
 import 'package:syncfusion_flutter_charts/charts.dart'; // Syncfusion package
 import 'package:intl/intl.dart';
@@ -105,10 +106,4 @@ class GraphScreen extends StatelessWidget {
   }
 }
 
-// ChartData class to store the date and order count
-class ChartData {
-  final DateTime date;
-  final int orderCount;
 
-  ChartData(this.date, this.orderCount);
-}

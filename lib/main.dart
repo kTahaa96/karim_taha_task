@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Order Metrics',
+      title: 'Orders Overview',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark, // Set dark mode
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => BlocProvider(
               create: (context) => OrderCubit(repository)..loadOrders(),
-              child: const GraphScreen(),
+              child: const HomeScreen(),
             ),
         // '/graph': (context) => GraphScreen(),
       },
