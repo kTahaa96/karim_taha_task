@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" id="sales">
+  <defs>
+    <linearGradient id="a">
+      <stop offset="0" stop-color="#000092"></stop>
+      <stop offset="1" stop-color="#ff00f3"></stop>
+    </linearGradient>
+    <linearGradient xlink:href="#a" id="b" x1="2" x2="28" y1="16" y2="16" gradientUnits="userSpaceOnUse"></linearGradient>
+  </defs>
+  <path fill="url(#b)" fill-rule="evenodd" d="M2.002 2v19.914L2 21.916l.002.002V30h28v-1h-27v-6.645l7.049-6.414 4.957 4.76 2.994-2.994 4 4 1-1L28.295 26h-.793v1h2.5v-2.5h-1v.793l-6-6-1 1-4-4-3.008 3.008-4.203-4.033 3.129-2.848 5.254 4.209 9.992-9v.873h1v-2.5h-2.5v1h.7l-9.23 8.314-5.257-4.21-3.81 3.466L3.001 7.79V2h-1zm1 7.176 6.326 6.072-6.326 5.756V9.176z" color="#000" font-family="sans-serif" font-weight="400" overflow="visible" style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal"></path>
+</svg>

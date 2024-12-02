@@ -11,6 +11,8 @@ void main() {
           id: '617ec83315ac5cc039950494',
           isActive: true,
           price: 1000,
+          picture: '',
+
           company: 'TEST COMANY',
           buyer: 'TEST BUYER',
           status: 'TEST STATUS'),
@@ -19,6 +21,7 @@ void main() {
           id: '617ec83315ac5cc039950494',
           isActive: true,
           price: 1000,
+          picture: '',
           company: 'TEST COMANY',
           buyer: 'TEST BUYER',
           status: 'TEST STATUS'),
@@ -27,6 +30,8 @@ void main() {
           id: '617ec83315ac5cc039950494',
           isActive: true,
           price: 1000,
+          picture: '',
+
           company: 'TEST COMANY',
           buyer: 'TEST BUYER',
           status: 'TEST STATUS'),

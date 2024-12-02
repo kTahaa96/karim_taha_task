@@ -15,6 +15,7 @@ class OrderRepositoryImpl implements OrderRepository {
     return models.map((model) {
       final price = double.parse(model.price.replaceAll(RegExp(r'[^0-9.]'), ''));
       return OrderEntity(
+        picture: model.picture,
         id: model.id,
         isActive: model.isActive,
         price: price,

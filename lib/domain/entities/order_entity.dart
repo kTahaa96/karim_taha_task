@@ -2,6 +2,7 @@ class OrderEntity {
   final String id;
   final bool isActive;
   final double price;
+  final String picture;
   final String company;
   final String buyer;
   final String status;
@@ -11,6 +12,7 @@ class OrderEntity {
     required this.id,
     required this.isActive,
     required this.price,
+    required this.picture,
     required this.company,
     required this.buyer,
     required this.status,

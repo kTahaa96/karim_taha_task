@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:karim_taha_task/core/chard_data.dart';
+import 'package:karim_taha_task/core/colors.dart';
 import 'package:karim_taha_task/domain/entities/order_entity.dart';
-import 'package:syncfusion_flutter_charts/charts.dart'; // Syncfusion package
-import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:karim_taha_task/presentation/cubit/cubit.dart';
 import 'package:karim_taha_task/presentation/cubit/state.dart';
+import 'package:intl/intl.dart';
 
 class GraphScreen extends StatelessWidget {
   const GraphScreen({super.key});
@@ -15,95 +15,123 @@ class GraphScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Orders Over Time'),
-        backgroundColor: Colors.black,
+        backgroundColor: MainColors.snow,
       ),
       body: BlocBuilder<OrderCubit, OrderState>(
         builder: (context, state) {
           if (state is OrderLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           } else if (state is OrderLoaded) {
-            final orders = state.orders;  // Access orders from the loaded state
-            // Prepare data to show in the chart: Group by date and count orders
-            final orderCountsPerDate = _groupOrdersByDate(orders);
+            final orders = state.orders;
 
-            // Data for the chart
-            List<ChartData> chartData = _prepareChartData(orderCountsPerDate);
+            final chartData = _prepareMonthlyChartData(orders);
 
             return Padding(
               padding: const EdgeInsets.all(16.0),
-              child: SfCartesianChart(
-                primaryXAxis: CategoryAxis(
-                  labelRotation: 45,
-                  isVisible: true,
-                  labelStyle: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SizedBox(
+                  width: chartData.length * 80.0,
+                  child: SfCartesianChart(
+                    primaryXAxis: CategoryAxis(
+                      labelRotation: 45,
+                      title: AxisTitle(
+                        text: 'Months',
+                        textStyle: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: MainColors.black,
+                        ),
+                      ),
+                    ),
+                    primaryYAxis: NumericAxis(
+                      title: AxisTitle(
+                        text: 'Orders',
+                        textStyle: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: MainColors.black,
+                        ),
+                      ),
+                      minimum: 0,
+                      labelStyle: const TextStyle(
+                        color: MainColors.black,
+                      ),
+                    ),
+                    series: <ChartSeries>[
+                      // Total Orders Count Series
+                      StackedColumnSeries<_MonthlyData, String>(
+                        dataSource: chartData,
+                        xValueMapper: (_MonthlyData data, _) => data.month,
+                        yValueMapper: (_MonthlyData data, _) =>
+                            data.totalOrders,
+                        name: 'Total Orders',
+                        color: MainColors.primary,
+                      ),
+                      // Returned Orders Count Series
+                      StackedColumnSeries<_MonthlyData, String>(
+                        dataSource: chartData,
+                        xValueMapper: (_MonthlyData data, _) => data.month,
+                        yValueMapper: (_MonthlyData data, _) =>
+                            data.returnedOrders,
+                        name: 'Returned Orders',
+                        color: Colors.red,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                      ),
+                    ],
+                    legend: Legend(isVisible: true),
                   ),
                 ),
-                primaryYAxis: NumericAxis(
-                  minimum: 0,
-                  maximum: chartData.isNotEmpty ? chartData.map((e) => e.orderCount).reduce((a, b) => a > b ? a : b) + 1 : 10,
-                  labelStyle: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                title: ChartTitle(
-                  text: 'Number of Orders Over Time',
-                  textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-                series: <ChartSeries>[
-                  // BarChartSeries for orders
-                  BarSeries<ChartData, String>(
-                    dataSource: chartData,
-                    xValueMapper: (ChartData data, _) => DateFormat('MM/dd/yyyy').format(data.date),
-                    yValueMapper: (ChartData data, _) => data.orderCount,
-                    color: const Color(0xff016A40), // Green bar color
-                    width: 0.6, // Bar width
-                    borderRadius: BorderRadius.circular(8),
-                    dataLabelSettings: const DataLabelSettings(isVisible: true),
-                  ),
-                ],
               ),
             );
           } else if (state is OrderError) {
             return Center(child: Text(state.message));
           }
-          return const SizedBox.shrink(); // Default case
+          return const SizedBox.shrink();
         },
       ),
     );
   }
 
-  // Helper function to group orders by date
-  Map<String, int> _groupOrdersByDate(List<OrderEntity> orders) {
-    Map<String, int> orderCounts = {};
+  /// Prepare monthly chart data from orders
+  List<_MonthlyData> _prepareMonthlyChartData(List<OrderEntity> orders) {
+    final Map<String, _MonthlyData> monthlyData = {};
 
     for (var order in orders) {
-      final date = DateFormat('MM/dd/yyyy').format(order.registered);  // Format the date
-      orderCounts[date] = (orderCounts[date] ?? 0) + 1;
+      final month = DateFormat('MMM yyyy').format(order.registered);
+
+      if (!monthlyData.containsKey(month)) {
+        monthlyData[month] =
+            _MonthlyData(month: month, totalOrders: 0, returnedOrders: 0);
+      }
+
+      monthlyData[month]!.totalOrders++;
+
+      if (order.status == 'RETURNED') {
+        monthlyData[month]!.returnedOrders++;
+      }
     }
 
-    return orderCounts;
-  }
-
-  // Prepare chart data from the grouped orders
-  List<ChartData> _prepareChartData(Map<String, int> orderCountsPerDate) {
-    List<ChartData> chartData = [];
-
-    orderCountsPerDate.forEach((date, count) {
-      final parsedDate = DateFormat('MM/dd/yyyy').parse(date);  // Convert string date back to DateTime
-      chartData.add(ChartData(parsedDate, count));
-    });
-
-    chartData.sort((a, b) => a.date.compareTo(b.date)); // Sort by date
-
+    final chartData = monthlyData.values.toList();
+    chartData.sort((a, b) => DateFormat('MMM yyyy')
+        .parse(a.month)
+        .compareTo(DateFormat('MMM yyyy').parse(b.month)));
     return chartData;
   }
 }
 
+/// Data model for monthly chart data
+class _MonthlyData {
+  final String month;
+  int totalOrders;
+  int returnedOrders;
 
+  _MonthlyData({
+    required this.month,
+    required this.totalOrders,
+    required this.returnedOrders,
+  });
+}
