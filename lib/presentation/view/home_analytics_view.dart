@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:karim_taha_task/core/colors.dart';
+import 'package:karim_taha_task/core/order_data.dart';
 import 'package:karim_taha_task/domain/entities/order_entity.dart';
 import 'package:karim_taha_task/presentation/cubit/cubit.dart';
 import 'package:karim_taha_task/presentation/cubit/state.dart';
@@ -205,12 +206,10 @@ class HomeScreen extends StatelessWidget {
               OrderData(
                 'Delivered Orders: $nonReturnedOrders',
                 nonReturnedOrders.toDouble(),
-                '${nonReturnedPercentage.toStringAsFixed(1)}%',
               ),
               OrderData(
                 'Returned Orders: $returnsCount',
                 returnsCount.toDouble(),
-                '${returnedPercentage.toStringAsFixed(1)}%',
               ),
             ],
             xValueMapper: (OrderData data, _) => data.label,
@@ -280,11 +279,4 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-}
-class OrderData {
-  final String label;
-  final double value;
-  final String percentage;
-
-  OrderData(this.label, this.value, this.percentage);
 }

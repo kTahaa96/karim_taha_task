@@ -11,14 +11,12 @@ class OrderLoading extends OrderState {}
 class OrderLoaded extends OrderState {
   final int totalOrders;
   final double total;
-  final List<MapEntry<String, double>> topBuyers;
   final int returnsCount;
   final List<OrderEntity> orders;
 
   OrderLoaded({
     required this.totalOrders,
     required this.total,
-    required this.topBuyers,
     required this.returnsCount,
     required this.orders,
   });
