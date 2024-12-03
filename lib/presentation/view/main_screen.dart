@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:karim_taha_task/core/colors.dart';
+import 'package:karim_taha_task/core/di.dart';
 import 'package:karim_taha_task/data/data_source/order_data_source.dart';
 import 'package:karim_taha_task/data/repo_impl/order_repository_impl.dart';
 import 'package:karim_taha_task/domain/repo/order_repository.dart';
@@ -26,7 +27,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => OrderCubit(widget.repository)..loadOrders(),
+        create: (context) => di<OrderCubit>()..loadOrders(),
         child: Scaffold(
           body: views[index],
           bottomNavigationBar: BottomNavigationBar(

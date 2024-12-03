@@ -16,6 +16,7 @@ dependencies:
   syncfusion_flutter_charts: ^20.4.50
   mocktail: ^1.0.4
   flutter_svg: ^2.0.16
+  get_it: ^7.6.0
 
 
 dev_dependencies:
