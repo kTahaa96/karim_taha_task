@@ -7,14 +7,10 @@ import 'package:karim_taha_task/presentation/cubit/cubit.dart';
 final di = GetIt.instance;
 
 Future<void> setupDependencyInjection() async {
-  // Register Data Source
   di.registerLazySingleton<OrderDataSource>(() => OrderDataSource());
 
-  // Register Repository
-  di.registerLazySingleton<OrderRepository>(
-        () => OrderRepositoryImpl(di<OrderDataSource>()),
+  di.registerLazySingleton<OrderRepository>(() => OrderRepositoryImpl(di<OrderDataSource>()),
   );
 
-  // Register OrderCubit
   di.registerFactory<OrderCubit>(() => OrderCubit(di<OrderRepository>()));
 }
