@@ -7,26 +7,47 @@ import 'package:intl/intl.dart';
 
 class OrderCubit extends Cubit<OrderState> {
   final OrderRepository repository;
+  final int loadLimit = 10; // Number of orders to load per batch
+  int currentPage = 0;
+  List<OrderEntity> loadedOrders = [];
 
   OrderCubit(this.repository) : super(OrderInitial());
 
   Future<void> loadOrders() async {
     emit(OrderLoading());
     try {
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2)); // Simulate loading
       final orders = await repository.getOrders();
-      final totalOrders = orders.length;
-      final totalRevenue = _calculateTotalRevenue(orders);
-      final returnedOrders = _getReturnedOrders(orders);
 
       emit(OrderLoaded(
         orders: orders,
-        totalOrders: totalOrders,
-        total: totalRevenue,
-        returnsCount: returnedOrders.length,
+        totalOrders: orders.length,
+        total: _calculateTotalRevenue(orders),
+        returnsCount: _getReturnedOrders(orders).length,
       ));
     } catch (e) {
       emit(OrderError('Failed to load orders'));
+    }
+  }
+
+  Future<void> loadMoreOrders() async {
+    if (currentPage * loadLimit < loadedOrders.length) return; // Check if there are more orders to load
+
+    try {
+      final orders = await repository.getOrders(); // Get all orders from the repository
+      final nextOrders = orders.skip(currentPage * loadLimit).take(loadLimit).toList();
+
+      currentPage++; // Increment the page after loading more orders
+      loadedOrders.addAll(nextOrders); // Add the new orders to the loaded list
+
+      emit(OrderLoaded(
+        orders: loadedOrders,
+        totalOrders: loadedOrders.length,
+        total: _calculateTotalRevenue(loadedOrders),
+        returnsCount: _getReturnedOrders(loadedOrders).length,
+      ));
+    } catch (e) {
+      emit(OrderError('Failed to load more orders'));
     }
   }
 

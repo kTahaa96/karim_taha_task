@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:karim_taha_task/core/colors.dart';
-import 'package:karim_taha_task/core/order_data.dart';
-import 'package:karim_taha_task/domain/entities/order_entity.dart';
 import 'package:karim_taha_task/presentation/cubit/cubit.dart';
 import 'package:karim_taha_task/presentation/cubit/state.dart';
 import 'package:karim_taha_task/presentation/widgets/home_content.dart';
-import 'package:karim_taha_task/presentation/widgets/last_orders_list.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

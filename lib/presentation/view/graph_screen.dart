@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:karim_taha_task/core/colors.dart';
 import 'package:karim_taha_task/core/mothly_date.dart';
-import 'package:karim_taha_task/domain/entities/order_entity.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:karim_taha_task/presentation/cubit/cubit.dart';
@@ -23,8 +22,6 @@ class GraphScreen extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           } else if (state is OrderLoaded) {
             final orders = state.orders;
-
-            // Call the prepareMonthlyChartData method from the Cubit
             final chartData = context.read<OrderCubit>().prepareMonthlyChartData(orders);
 
             return Padding(
@@ -55,19 +52,19 @@ class GraphScreen extends StatelessWidget {
                         ),
                       ),
                       minimum: 0,
-                      labelStyle: TextStyle(
+                      labelStyle: const TextStyle(
                         color: MainColors.black,
                       ),
                     ),
                     series: <ChartSeries>[
-                      // Line Chart for Non-Returned Orders
                       LineSeries<MonthlyData, String>(
                         dataSource: chartData,
                         xValueMapper: (MonthlyData data, _) => data.month,
-                        yValueMapper: (MonthlyData data, _) => data.nonReturnedOrders,
+                        yValueMapper: (MonthlyData data, _) =>
+                            data.nonReturnedOrders,
                         name: 'Delivered Orders',
                         color: MainColors.primary,
-                        markerSettings: MarkerSettings(
+                        markerSettings: const MarkerSettings(
                           isVisible: true,
                           shape: DataMarkerType.circle,
                           color: MainColors.primary,
@@ -77,14 +74,14 @@ class GraphScreen extends StatelessWidget {
                         width: 2,
                         enableTooltip: true,
                       ),
-                      // Line Chart for Returned Orders
                       LineSeries<MonthlyData, String>(
                         dataSource: chartData,
                         xValueMapper: (MonthlyData data, _) => data.month,
-                        yValueMapper: (MonthlyData data, _) => data.returnedOrders,
+                        yValueMapper: (MonthlyData data, _) =>
+                            data.returnedOrders,
                         name: 'Returned Orders',
                         color: Colors.red,
-                        markerSettings: MarkerSettings(
+                        markerSettings: const MarkerSettings(
                           isVisible: true,
                           shape: DataMarkerType.circle,
                           color: Colors.red,
@@ -114,4 +111,3 @@ class GraphScreen extends StatelessWidget {
     );
   }
 }
-

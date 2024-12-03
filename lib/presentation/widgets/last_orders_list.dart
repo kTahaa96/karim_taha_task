@@ -11,7 +11,7 @@ class LastOrdersList extends StatelessWidget {
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: orders.length,
+      itemCount: 10,
       separatorBuilder: (_, index) => const SizedBox(height: 20),
       itemBuilder: (_, index) {
         final order = orders[index];
