@@ -54,7 +54,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             Text(
-              ' (${totalOrders} Order)',
+              ' ($totalOrders Order)',
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
@@ -184,6 +184,13 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildPieChart(int nonReturnedOrders, int returnsCount) {
+    // Calculate total orders
+    final totalOrders = nonReturnedOrders + returnsCount;
+
+    // Calculate percentages
+    final nonReturnedPercentage = (nonReturnedOrders / totalOrders) * 100;
+    final returnedPercentage = (returnsCount / totalOrders) * 100;
+
     return Container(
       height: 200,
       decoration: BoxDecoration(
@@ -195,13 +202,21 @@ class HomeScreen extends StatelessWidget {
         series: <CircularSeries>[
           PieSeries<OrderData, String>(
             dataSource: [
-              OrderData('Delivered Orders', nonReturnedOrders.toDouble()),
-              OrderData('Returned Orders', returnsCount.toDouble()),
+              OrderData(
+                'Delivered Orders: $nonReturnedOrders',
+                nonReturnedOrders.toDouble(),
+                '${nonReturnedPercentage.toStringAsFixed(1)}%',
+              ),
+              OrderData(
+                'Returned Orders: $returnsCount',
+                returnsCount.toDouble(),
+                '${returnedPercentage.toStringAsFixed(1)}%',
+              ),
             ],
             xValueMapper: (OrderData data, _) => data.label,
             yValueMapper: (OrderData data, _) => data.value,
             pointColorMapper: (OrderData data, _) {
-              return data.label == 'Delivered Orders'
+              return data.label.contains('Delivered Orders')
                   ? MainColors.primary
                   : Colors.red;
             },
@@ -266,10 +281,10 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
 class OrderData {
   final String label;
   final double value;
+  final String percentage;
 
-  OrderData(this.label, this.value);
+  OrderData(this.label, this.value, this.percentage);
 }

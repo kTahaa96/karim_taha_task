@@ -13,7 +13,7 @@ dependencies:
   equatable: ^2.0.5
   json_serializable: ^6.9.0
   cupertino_icons: ^1.0.8
-  syncfusion_flutter_charts: ^20.1.55
+  syncfusion_flutter_charts: ^20.4.50
   mocktail: ^1.0.4
   flutter_svg: ^2.0.16
 

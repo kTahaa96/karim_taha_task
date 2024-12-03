@@ -54,35 +54,52 @@ class GraphScreen extends StatelessWidget {
                         ),
                       ),
                       minimum: 0,
-                      labelStyle: const TextStyle(
+                      labelStyle: TextStyle(
                         color: MainColors.black,
                       ),
                     ),
                     series: <ChartSeries>[
-                      // Total Orders Count Series
-                      StackedColumnSeries<_MonthlyData, String>(
+                      // Line Chart for Non-Returned Orders with Gradient
+                      LineSeries<_MonthlyData, String>(
                         dataSource: chartData,
                         xValueMapper: (_MonthlyData data, _) => data.month,
-                        yValueMapper: (_MonthlyData data, _) =>
-                            data.totalOrders,
-                        name: 'Total Orders',
+                        yValueMapper: (_MonthlyData data, _) => data.nonReturnedOrders,
+                        name: 'Delivered Orders',
                         color: MainColors.primary,
+                        markerSettings: MarkerSettings(
+                          isVisible: true,
+                          shape: DataMarkerType.circle,
+                          color: MainColors.primary,
+                          borderColor: Colors.white,
+                          borderWidth: 2,
+                        ),
+                        width: 2,
+                        enableTooltip: true,
                       ),
-                      // Returned Orders Count Series
-                      StackedColumnSeries<_MonthlyData, String>(
+                      // Line Chart for Returned Orders
+                      LineSeries<_MonthlyData, String>(
                         dataSource: chartData,
                         xValueMapper: (_MonthlyData data, _) => data.month,
-                        yValueMapper: (_MonthlyData data, _) =>
-                            data.returnedOrders,
+                        yValueMapper: (_MonthlyData data, _) => data.returnedOrders,
                         name: 'Returned Orders',
                         color: Colors.red,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10),
+                        markerSettings: MarkerSettings(
+                          isVisible: true,
+                          shape: DataMarkerType.circle,
+                          color: Colors.red,
+                          borderColor: Colors.white,
+                          borderWidth: 2,
                         ),
+                        width: 2,
+                        enableTooltip: true,
                       ),
                     ],
-                    legend: Legend(isVisible: true),
+                    legend: Legend(
+                      isVisible: true,
+                      position: LegendPosition.top,
+                      alignment: ChartAlignment.center,
+                      title: LegendTitle(text: 'Orders Statistics'),
+                    ),
                   ),
                 ),
               ),
@@ -105,10 +122,13 @@ class GraphScreen extends StatelessWidget {
 
       if (!monthlyData.containsKey(month)) {
         monthlyData[month] =
-            _MonthlyData(month: month, totalOrders: 0, returnedOrders: 0);
+            _MonthlyData(month: month, totalOrders: 0, returnedOrders: 0, nonReturnedOrders: 0);
       }
 
       monthlyData[month]!.totalOrders++;
+
+      // Increment non-returned orders by calculating totalOrders - returnedOrders
+      monthlyData[month]!.nonReturnedOrders = monthlyData[month]!.totalOrders - monthlyData[month]!.returnedOrders;
 
       if (order.status == 'RETURNED') {
         monthlyData[month]!.returnedOrders++;
@@ -128,10 +148,12 @@ class _MonthlyData {
   final String month;
   int totalOrders;
   int returnedOrders;
+  int nonReturnedOrders; // Added this property for non-returned orders
 
   _MonthlyData({
     required this.month,
     required this.totalOrders,
     required this.returnedOrders,
+    required this.nonReturnedOrders,
   });
 }
